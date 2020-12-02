@@ -28,11 +28,14 @@ func run(input string) (interface{}, interface{}) {
 
 	inputValues := parse(input)
 
-	log.Info().Interface("inputValues", inputValues).Msg("")
+	log.Debug().Interface("inputValues", inputValues).Msg("")
 
 	for _, inputLine := range inputValues {
-		if checkPass(inputLine.Min, inputLine.Max, inputLine.Letter, inputLine.Password) {
-			goodPasswords++
+		if checkPass1(inputLine.Min, inputLine.Max, inputLine.Letter, inputLine.Password) {
+			part1++
+		}
+		if checkPass2(inputLine.Min, inputLine.Max, inputLine.Letter, inputLine.Password) {
+			part2++
 		}
 	}
 	part1 = goodPasswords
@@ -70,7 +73,11 @@ func main() {
 	execute.Run(run, tests, puzzle, true)
 }
 
-func checkPass(min int, max int, letter string, password string) bool {
+func checkPass1(min int, max int, letter string, password string) bool {
 	occurences := strings.Count(password, letter)
 	return occurences >= min && occurences <= max
+}
+
+func checkPass2(min int, max int, letter string, password string) bool {
+	return false
 }
