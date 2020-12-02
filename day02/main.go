@@ -24,8 +24,6 @@ type InputLine struct {
 func run(input string) (interface{}, interface{}) {
 	part1, part2 := 0, 0
 
-	goodPasswords := 0
-
 	inputValues := parse(input)
 
 	log.Debug().Interface("inputValues", inputValues).Msg("")
@@ -38,7 +36,6 @@ func run(input string) (interface{}, interface{}) {
 			part2++
 		}
 	}
-	part1 = goodPasswords
 
 	return part1, part2
 }
@@ -78,6 +75,6 @@ func checkPass1(min int, max int, letter string, password string) bool {
 	return occurences >= min && occurences <= max
 }
 
-func checkPass2(min int, max int, letter string, password string) bool {
-	return false
+func checkPass2(pos1 int, pos2 int, letter string, password string) bool {
+	return (string(password[pos1-1]) == letter) != (string(password[pos2-1]) == letter)
 }
