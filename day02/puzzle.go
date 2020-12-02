@@ -13,5 +13,3 @@ var tests = execute.TestCases{
 		ExpectedPart2: ``,
 	},
 }
-
-var puzzle = ``

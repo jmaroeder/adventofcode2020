@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -11,15 +13,41 @@ import (
 	"github.com/jmaroeder/adventofcode2020/pkg/execute"
 )
 
+type InputLine struct {
+	Min      int
+	Max      int
+	Letter   string
+	Password string
+}
+
 // returns part1 and part2
 func run(input string) (interface{}, interface{}) {
 	part1, part2 := 0, 0
 
-	inputValues := pkg.ParseIntList(input, ",")
+	goodPasswords := 0
+
+	inputValues := parse(input)
 
 	log.Info().Interface("inputValues", inputValues).Msg("")
 
+	for _, inputLine := range inputValues {
+		if checkPass(inputLine.Min, inputLine.Max, inputLine.Letter, inputLine.Password) {
+			goodPasswords++
+		}
+	}
+	part1 = goodPasswords
+
 	return part1, part2
+}
+
+func parse(s string) []InputLine {
+	lines := strings.Split(strings.TrimSpace(s), "\n")
+	list := make([]InputLine, len(lines))
+	for i, line := range lines {
+		log.Debug().Str("line", line).Msg("")
+		pkg.MustScanf(line, "%d-%d %1s: %s", &list[i].Min, &list[i].Max, &list[i].Letter, &list[i].Password)
+	}
+	return list
 }
 
 func main() {
@@ -33,9 +61,16 @@ func main() {
 
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
+	content, err := ioutil.ReadFile("input.txt")
+	if err != nil {
+		log.Fatal().Err(err).Msg("")
+	}
+	var puzzle = string(content)
+
 	execute.Run(run, tests, puzzle, true)
 }
 
-func checkPass(min int, max int, letter string, input string) bool {
-	return false
+func checkPass(min int, max int, letter string, password string) bool {
+	occurences := strings.Count(password, letter)
+	return occurences >= min && occurences <= max
 }
