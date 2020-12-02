@@ -1,8 +1,6 @@
 package main
 
 import (
-	"strings"
-
 	"github.com/jmaroeder/adventofcode2020/pkg"
 	"github.com/jmaroeder/adventofcode2020/pkg/execute"
 )
@@ -34,14 +32,6 @@ func run(input string) (interface{}, interface{}) {
 	}
 
 	return part1, part2
-}
-
-func parse(s string) {
-	lines := strings.Split(s, ",")
-	for _, line := range lines {
-		pkg.MustScanf(line, "")
-	}
-	return
 }
 
 func main() {
