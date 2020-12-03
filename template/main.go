@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"os"
 
 	"github.com/rs/zerolog"
@@ -32,6 +33,12 @@ func main() {
 	}
 
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+
+	content, err := ioutil.ReadFile("input.txt")
+	if err != nil {
+		log.Fatal().Err(err).Msg("")
+	}
+	var puzzle = string(content)
 
 	execute.Run(run, tests, puzzle, true)
 }
