@@ -11,13 +11,28 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-type TestCase struct {
+type FieldTestCase struct {
+	Value          string
+	ExpectedResult bool
+}
+
+func TestIsByrValid(t *testing.T) {
+	testCases := map[string]bool{
+		"2002": true,
+		"2003": false,
+	}
+	for value, expectedResult := range testCases {
+		assert.Equal(t, expectedResult, isByrValid(value), "%s fail", value)
+	}
+}
+
+type PassportTestCase struct {
 	Passport       map[string]string
 	ExpectedResult bool
 }
 
 func TestIsPassportValid(t *testing.T) {
-	testCases := []TestCase{
+	testCases := []PassportTestCase{
 		{
 			Passport: map[string]string{
 				"ecl": "gry",
