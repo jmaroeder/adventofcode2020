@@ -4,6 +4,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/rs/zerolog"
@@ -72,7 +73,13 @@ func isPassportValid(passport map[string]string) bool {
 }
 
 func isByrValid(byr string) bool {
-	return false
+	res, err := regexp.MatchString(`^\d{4}$`, byr)
+	pkg.Check(err)
+	if !res {
+		return false
+	}
+	year := pkg.MustAtoi(byr)
+	return year >= 1920 && year <= 2002
 }
 
 func areFieldsValid(passport map[string]string) bool {
