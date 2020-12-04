@@ -112,9 +112,8 @@ func isHgtValid(s string) bool {
 	}
 	if res[0][2] == "cm" {
 		return height >= 150 && height <= 193
-	} else {
-		return height >= 59 && height <= 76
 	}
+	return height >= 59 && height <= 76
 }
 
 func isHclValid(s string) bool {
