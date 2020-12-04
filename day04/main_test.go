@@ -26,6 +26,69 @@ func TestIsByrValid(t *testing.T) {
 	}
 }
 
+func TestIsIyrValid(t *testing.T) {
+	testCases := map[string]bool{
+		"2010": true,
+		"2021": false,
+	}
+	for value, expectedResult := range testCases {
+		assert.Equal(t, expectedResult, isIyrValid(value), "%s fail", value)
+	}
+}
+
+func TestIsEyrValid(t *testing.T) {
+	testCases := map[string]bool{
+		"2020": true,
+		"2031": false,
+	}
+	for value, expectedResult := range testCases {
+		assert.Equal(t, expectedResult, isEyrValid(value), "%s fail", value)
+	}
+}
+
+func TestIsHgtValid(t *testing.T) {
+	testCases := map[string]bool{
+		"60in":  true,
+		"190cm": true,
+		"190in": false,
+		"190":   false,
+	}
+	for value, expectedResult := range testCases {
+		assert.Equal(t, expectedResult, isHgtValid(value), "%s fail", value)
+	}
+}
+
+func TestIsHclValid(t *testing.T) {
+	testCases := map[string]bool{
+		"#123abc": true,
+		"#123abz": false,
+		"123abc":  false,
+	}
+	for value, expectedResult := range testCases {
+		assert.Equal(t, expectedResult, isHclValid(value), "%s fail", value)
+	}
+}
+
+func TestIsEclValid(t *testing.T) {
+	testCases := map[string]bool{
+		"brn": true,
+		"wat": false,
+	}
+	for value, expectedResult := range testCases {
+		assert.Equal(t, expectedResult, isEclValid(value), "%s fail", value)
+	}
+}
+
+func TestIsPidValid(t *testing.T) {
+	testCases := map[string]bool{
+		"000000001":  true,
+		"0123456789": false,
+	}
+	for value, expectedResult := range testCases {
+		assert.Equal(t, expectedResult, isPidValid(value), "%s fail", value)
+	}
+}
+
 type PassportTestCase struct {
 	Passport       map[string]string
 	ExpectedResult bool

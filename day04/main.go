@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/rs/zerolog"
@@ -22,14 +23,14 @@ func run(input string) (interface{}, interface{}) {
 
 	log.Debug().Interface("passports", passports).Msg("")
 
-	validPassports := 0
-
 	for _, passport := range passports {
 		if isPassportValid(passport) {
-			validPassports++
+			part1++
+			if areFieldsValid(passport) {
+				part2++
+			}
 		}
 	}
-	part1 = validPassports
 
 	return part1, part2
 }
@@ -72,18 +73,67 @@ func isPassportValid(passport map[string]string) bool {
 	return len(requiredFields) == 0
 }
 
-func isByrValid(byr string) bool {
-	res, err := regexp.MatchString(`^\d{4}$`, byr)
-	pkg.Check(err)
-	if !res {
-		return false
+func mustYear(s string) int {
+	res, matchErr := regexp.MatchString(`^\d{4}$`, s)
+	if matchErr != nil || !res {
+		return -1
 	}
-	year := pkg.MustAtoi(byr)
+	i, atoiErr := strconv.Atoi(s)
+	if atoiErr != nil {
+		return -1
+	}
+	return i
+}
+
+func isByrValid(s string) bool {
+	year := mustYear(s)
 	return year >= 1920 && year <= 2002
 }
 
+func isIyrValid(s string) bool {
+	year := mustYear(s)
+	return year >= 2010 && year <= 2020
+}
+
+func isEyrValid(s string) bool {
+	year := mustYear(s)
+	return year >= 2020 && year <= 2030
+}
+
+func isHgtValid(s string) bool {
+	re := regexp.MustCompile(`(\d+)(cm|in)`)
+	res := re.FindAllStringSubmatch(s, -1)
+	if len(res) != 1 {
+		return false
+	}
+	height, atoiErr := strconv.Atoi(res[0][1])
+	if atoiErr != nil {
+		return false
+	}
+	if res[0][2] == "cm" {
+		return height >= 150 && height <= 193
+	} else {
+		return height >= 59 && height <= 76
+	}
+}
+
+func isHclValid(s string) bool {
+	res, matchErr := regexp.MatchString(`^#[0-9a-f]{6}$`, s)
+	return matchErr == nil && res
+}
+
+func isEclValid(s string) bool {
+	res, matchErr := regexp.MatchString(`^(amb|blu|brn|gry|grn|hzl|oth)$`, s)
+	return matchErr == nil && res
+}
+
+func isPidValid(s string) bool {
+	res, matchErr := regexp.MatchString(`^\d{9}$`, s)
+	return matchErr == nil && res
+}
+
 func areFieldsValid(passport map[string]string) bool {
-	return false
+	return isByrValid(passport["byr"]) && isIyrValid(passport["iyr"]) && isEyrValid(passport["eyr"]) && isHgtValid(passport["hgt"]) && isHclValid(passport["hcl"]) && isEclValid(passport["ecl"]) && isPidValid(passport["pid"])
 }
 
 func main() {
