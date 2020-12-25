@@ -8,11 +8,14 @@ from day07.bag_rules import BagRules
 
 
 def main(s: str) -> Tuple[Any, Any]:
-    part1 = None
-    part2 = None
+    part1 = 0
 
     rules = BagRules(s)
-
+    shiny_gold = rules.bag("shiny gold")
+    for bag in rules.bags.values():
+        if rules.can_contain(bag, shiny_gold):
+            part1 += 1
+    part2 = rules.count_inside(shiny_gold)
     return part1, part2
 
 
@@ -28,7 +31,7 @@ SAMPLE_INPUT = textwrap.dedent(
     faded blue bags contain no other bags.
     dotted black bags contain no other bags.
     """
-)
+).strip()
 
 
 if __name__ == "__main__":
@@ -37,13 +40,13 @@ if __name__ == "__main__":
         advent.TestCase(
             input=SAMPLE_INPUT,
             expected_part_1=4,
-            expected_part_2="",
+            expected_part_2=32,
         ),
     )
 
     input_file = Path(__file__).parent.absolute() / "input.txt"
-    part1, part2 = main(input_file.read_text())
-    if part1:
+    part1, part2 = main(input_file.read_text().strip())
+    if part1 is not None:
         print(f"Part 1: {part1}")
-    if part2:
+    if part2 is not None:
         print(f"Part 2: {part2}")

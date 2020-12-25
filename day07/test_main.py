@@ -19,3 +19,17 @@ from day07.bag_rules import BagRules
 )
 def test_can_contain(outer: str, inner: str, expected: bool, bag_rules: BagRules) -> None:
     assert bag_rules.can_contain(outer, inner) == expected
+
+
+@pytest.mark.parametrize(
+    ("outer", "expected"),
+    [
+        ("faded blue", 0),
+        ("dotted black", 0),
+        ("vibrant plum", 11),
+        ("dark olive", 7),
+        ("shiny gold", 32),
+    ],
+)
+def test_count_inside(outer: str, expected: int, bag_rules: BagRules) -> None:
+    assert bag_rules.count_inside(outer) == expected
