@@ -10,6 +10,7 @@ authors = ["James Roeder <jmaroeder@gmail.com>"]
 packages = [
   { include = "advent" },
   { include = "day07" },
+  { include = "day08" },
 ]
 
 [tool.poetry.dependencies]
