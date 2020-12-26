@@ -11,6 +11,8 @@ packages = [
   { include = "advent" },
   { include = "day07" },
   { include = "day08" },
+  { include = "day09" },
+  { include = "day1*" },
 ]
 
 [tool.poetry.dependencies]
