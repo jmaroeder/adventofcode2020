@@ -1,5 +1,6 @@
 import contextlib
 import textwrap
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 from typing import Tuple
@@ -8,7 +9,10 @@ import advent
 from day08.handheld_vm import HandheldVM
 from day08.handheld_vm import Operation
 
-CORRUPTABLE_OPS = {Operation.nop, Operation.jmp}
+SWAP_OPS = {
+    Operation.nop: Operation.jmp,
+    Operation.jmp: Operation.nop,
+}
 
 
 def main(s: str) -> Tuple[Any, Any]:
@@ -18,16 +22,16 @@ def main(s: str) -> Tuple[Any, Any]:
     vm.run_until_infinite_loop()
     part1 = vm.acc
 
-    base_code = vm.code
-
-    for idx, instruction in enumerate(base_code):
+    for idx, instruction in enumerate(vm.code):
         if instruction.operation == Operation.acc:
             continue
-        variant = base_code.copy()
-        if instruction.operation == Operation.nop:
-            # TODO
-            pass
-        # TODO: run vm, check for infinite loop
+        variant_code = vm.code.copy()
+        variant_code[idx] = replace(instruction, operation=SWAP_OPS[instruction.operation])
+        variant_vm = HandheldVM(code=variant_code)
+        variant_vm.run_until_infinite_loop()
+        if variant_vm.completed:
+            part2 = variant_vm.acc
+            break
 
     return part1, part2
 

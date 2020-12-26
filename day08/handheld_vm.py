@@ -90,5 +90,8 @@ class HandheldVM:
 
     def run_until_infinite_loop(self) -> None:
         with contextlib.suppress(InfiniteLoop):
-            while True:
-                self.tick()
+            self.run_until_completion()
+
+    def run_until_completion(self) -> None:
+        while not self.completed:
+            self.tick()
