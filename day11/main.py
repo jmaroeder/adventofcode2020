@@ -24,6 +24,12 @@ STR_REP: Mapping[Optional[bool], str] = {
     None: ".",
 }
 
+DIRECTIONS = (
+    (-1, -1), (-1, 0), (-1, 1),
+    (0, -1), (0, 1),
+    (1, -1), (1, 0), (1, 1),
+)
+
 
 
 
@@ -93,6 +99,42 @@ class SeatMap:
                 break
         return ticks
 
+
+class SeatMap2(SeatMap):
+    def tick(self) -> int:
+        """Return the number of changes after a tick."""
+        next_grid = self.grid.copy()
+        changes = 0
+        for row, col in self.grid.keys():
+            adjacent_seats = self.count_occupied_adjacent_visible_seats(row, col)
+            if not self.grid[row, col] and adjacent_seats == 0:
+                next_grid[row, col] = True
+                changes += 1
+            elif self.grid[row, col] and adjacent_seats >= 5:
+                next_grid[row, col] = False
+                changes += 1
+        self.grid = next_grid
+        return changes
+
+    def count_occupied_adjacent_visible_seats(self, row: int, col: int) -> int:
+        ret = 0
+
+        for direction in DIRECTIONS:
+            i, j = row + direction[0], col + direction[1]
+            while i >= 0 and i < self.height and j >= 0 and j < self.width:
+                if self.grid.get((i, j)):
+                    ret += 1
+                    break
+                if (i, j) in self.grid:
+                    break
+                i += direction[0]
+                j += direction[1]
+
+        return ret
+
+
+
+
 def main(s: str) -> Tuple[Any, Any]:
     part1 = None
     part2 = None
@@ -101,6 +143,12 @@ def main(s: str) -> Tuple[Any, Any]:
     LOG.debug(f"\n{seat_map}")
     seat_map.run_until_stable()
     part1 = seat_map.count_occupied_seats()
+
+    print("part 2")
+
+    seat_map_2 = SeatMap2.from_str(s)
+    seat_map_2.run_until_stable()
+    part2 = seat_map_2.count_occupied_seats()
     return part1, part2
 
 
@@ -128,7 +176,7 @@ if __name__ == "__main__":
         advent.TestCase(
             input=SAMPLE_INPUT,
             expected_part_1=37,
-            expected_part_2=None,
+            expected_part_2=26,
         ),
     )
 
